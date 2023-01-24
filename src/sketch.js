@@ -8,10 +8,20 @@ let foxesAmount = 10;
 let rabbitsAmount = 10;
 let boxWidth;
 let boxHeight;
+let foxImage;
+let rabbitImage;
 
 window.setup = setup;
+window.preload = preload;
 window.draw = draw;
 window.mouseClicked = mouseClicked;
+
+
+
+function preload() {
+  foxImage = loadImage("./img/fox.png");
+  rabbitImage = loadImage("./img/rabbit1.png");
+}
 
 
 function setup() {
@@ -50,13 +60,12 @@ function generateRabbits() {
 function draw() {
   boxWidth = width / boxesPerRow;
   boxHeight = height / boxesPerRow;
-  background(220);
+  background(90, 220, 90);
 
 
   drawGrid();
 
   drawAnimals();
-
 }
 
 function drawGrid() {
@@ -85,8 +94,49 @@ function drawAnimals() {
       const position = getPositionFromLocation(location);
       text(`Foxes: ${amountFoxes}`, position.x + 30, position.y + 40);
       text(`Rabbits: ${amountRabbits}`, position.x + 30, position.y + 60);
+      drawAnimalImagesInBox(position, amountFoxes, amountRabbits);
     }
   }
+}
+
+function drawAnimalImagesInBox(position, amountFoxes, amountRabbits) {
+  let accum_x = 0;
+  let accum_y = 5;
+
+  for (let fox = 0; fox < amountFoxes + amountRabbits; fox++) {
+
+    //stop drawing images if animals do not fit the box
+    if (accum_y > 100) {
+      break;
+    }
+    if (fox < amountFoxes) {
+      image(foxImage, position.x + accum_x, position.y + accum_y, 20, 20);
+    }
+    else {
+      image(rabbitImage, position.x + accum_x, position.y + accum_y);
+    }
+    //line break
+    accum_x += 20;
+    if (accum_x >= 90) {
+      accum_x = 0;
+      accum_y += 20;
+    }
+  }
+}
+/**
+ * Events
+ */
+
+function mouseClicked() {
+  moveEveryAnimal();
+  updateAnimalsGlobalLocations();
+}
+
+
+function moveEveryAnimal() {
+  allAnimals.forEach(animal => {
+    animal.move();
+  });
 }
 
 function updateAnimalsGlobalLocations() {
@@ -107,20 +157,6 @@ function updateAnimalsGlobalLocations() {
 function clearGlobalLocations() {
   globalLocations = [];
   initializeLocations();
-}
-/**
- * Events
- */
-
-function mouseClicked() {
-  moveEveryAnimal();
-  updateAnimalsGlobalLocations();
-}
-
-function moveEveryAnimal() {
-  allAnimals.forEach(animal => {
-    animal.move();
-  });
 }
 /**
  * Utils
