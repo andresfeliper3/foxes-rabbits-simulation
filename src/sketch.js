@@ -12,7 +12,8 @@ let boxHeight;
 let foxImage;
 let rabbitImage;
 
-const FOX_REPRODUCTION_PROBABILITY = 0.5;
+const FOX_REPRODUCTION_PROBABILITY = 0.4;
+const RABBIT_REPRODUCTION_PROBABILITY = 0.6;
 
 window.setup = setup;
 window.preload = preload;
@@ -187,9 +188,10 @@ function checkAnimalsState() {
   setTimeout(() => {
     for (let y = 0; y < globalLocations.length; y++) {
       for (let x = 0; x < globalLocations[y].length; x++) {
-        const rabbits = globalLocations[y][x].rabbits;
         const foxes = globalLocations[y][x].foxes;
-        checkIfFoxesCanReproduce(foxes)
+        const rabbits = globalLocations[y][x].rabbits;
+        checkIfAnimalsCanReproduce(foxes);
+        checkIfAnimalsCanReproduce(rabbits);
         foxes.forEach((fox, index, foxesArr) => {
           checkIfFoxCanEatRabbit(fox, rabbits);
           checkIfFoxStarvesToDeath(fox, index, foxesArr);
@@ -218,23 +220,42 @@ function animalDies(animal) {
   else if (animal instanceof Fox) {
     foxesAmount--;
   }
-}
 
-function checkIfFoxesCanReproduce(foxes) {
+}
+function checkIfAnimalsCanReproduce(animals) {
   let offspring = [];
-  if (foxes.length >= 2) {
-    const amountOfCouplesThatWillReproduce = foxes.length % 2 == 0 ? foxes.length : foxesAmount.length - 1;
+  let typeOfAnimals;
+  let reproductionProbability;
+
+  if (animals.length >= 2) {
+
+    if (animals[0] instanceof Fox) {
+      typeOfAnimals = "Fox";
+      reproductionProbability = FOX_REPRODUCTION_PROBABILITY;
+    }
+    else if (animals[0] instanceof Rabbit) {
+      typeOfAnimals = "Rabbit";
+      reproductionProbability = RABBIT_REPRODUCTION_PROBABILITY;
+    }
+
+    const amountOfCouplesThatWillReproduce = animals.length % 2 == 0 ? animals.length : foxesAmount.length - 1;
     for (let i = 0; i < amountOfCouplesThatWillReproduce; i += 2) {
       const randomNumber = Math.random();
-      if (randomNumber <= FOX_REPRODUCTION_PROBABILITY) {
-        const newFox = foxes[i].reproduce(foxes[i + 1]);
+      if (randomNumber <= reproductionProbability) {
+        const newFox = animals[i].reproduce(animals[i + 1]);
         offspring.push(newFox);
       }
     }
   }
-  foxes.push(...offspring);
+  animals.push(...offspring);
   allAnimals.push(...offspring);
-  foxesAmount += offspring.length;
+  if (typeOfAnimals == "Fox") {
+    foxesAmount += offspring.length;
+  }
+  else if (typeOfAnimals == "Rabbit") {
+    rabbitsAmount += offspring.length;
+  }
+
 }
 
 function checkIfFoxStarvesToDeath(fox, index, foxesArr) {

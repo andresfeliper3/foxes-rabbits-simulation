@@ -18,3 +18,12 @@ html, body {
   .text {
     text-align: center;
   }
+
+  #main {
+   width: 80%; 
+   border: 1px solid red;
+  }
+
+  #info{
+    
+  }

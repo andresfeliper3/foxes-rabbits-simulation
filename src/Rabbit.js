@@ -1,4 +1,5 @@
 import { Animal } from "./Animal.js";
+import { copyObject } from "./Functions.js";
 
 export class Rabbit extends Animal {
     constructor(initialLocation, name) {
@@ -7,8 +8,8 @@ export class Rabbit extends Animal {
         this.name = name;
     }
 
-    escape() {
-
+    reproduce(rabbit) {
+        return new Rabbit(copyObject(this.location), `{${this.name},${rabbit.getName()}}`);
     }
 
     getLocation() {
