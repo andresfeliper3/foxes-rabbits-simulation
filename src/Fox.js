@@ -1,6 +1,7 @@
 import { Animal } from "./Animal.js";
+import { copyObject } from "./Functions.js";
 
-const HUNGER_LIMIT = 7;
+const HUNGER_LIMIT = 5;
 
 export class Fox extends Animal {
     constructor(initialLocation, name) {
@@ -24,6 +25,11 @@ export class Fox extends Animal {
         }
         return false;
     }
+
+    reproduce(fox) {
+        return new Fox(copyObject(this.location), `{${this.name},${fox.getName()}}`);
+    }
+
     getLocation() {
         return this.location;
     }
@@ -33,3 +39,4 @@ export class Fox extends Animal {
     }
 
 }
+

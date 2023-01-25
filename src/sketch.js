@@ -1,6 +1,6 @@
 import { Fox } from "./Fox.js";
 import { Rabbit } from "./Rabbit.js";
-
+import { copyObject } from "./Functions.js";
 
 const boxesPerRow = 5;
 let globalLocations = [];
@@ -11,6 +11,8 @@ let boxWidth;
 let boxHeight;
 let foxImage;
 let rabbitImage;
+
+const FOX_REPRODUCTION_PROBABILITY = 0.5;
 
 window.setup = setup;
 window.preload = preload;
@@ -78,7 +80,6 @@ function draw() {
   drawGrid();
 
   drawAnimals();
-
 
 }
 
@@ -186,17 +187,17 @@ function checkAnimalsState() {
   setTimeout(() => {
     for (let y = 0; y < globalLocations.length; y++) {
       for (let x = 0; x < globalLocations[y].length; x++) {
-        globalLocations[y][x].foxes.forEach((fox, index, foxesArr) => {
-          const rabbits = globalLocations[y][x].rabbits;
+        const rabbits = globalLocations[y][x].rabbits;
+        const foxes = globalLocations[y][x].foxes;
+        checkIfFoxesCanReproduce(foxes)
+        foxes.forEach((fox, index, foxesArr) => {
           checkIfFoxCanEatRabbit(fox, rabbits);
           checkIfFoxStarvesToDeath(fox, index, foxesArr);
-
         });
       }
     }
 
   }, 1000);
-  console.log(globalLocations);
 }
 
 function checkIfFoxCanEatRabbit(fox, rabbits) {
@@ -207,6 +208,7 @@ function checkIfFoxCanEatRabbit(fox, rabbits) {
     animalDies(eatenRabbit);
   }
 }
+
 function animalDies(animal) {
   const animalIndex = allAnimals.indexOf(animal);
   allAnimals.splice(animalIndex, 1);
@@ -218,12 +220,30 @@ function animalDies(animal) {
   }
 }
 
+function checkIfFoxesCanReproduce(foxes) {
+  let offspring = [];
+  if (foxes.length >= 2) {
+    const amountOfCouplesThatWillReproduce = foxes.length % 2 == 0 ? foxes.length : foxesAmount.length - 1;
+    for (let i = 0; i < amountOfCouplesThatWillReproduce; i += 2) {
+      const randomNumber = Math.random();
+      if (randomNumber <= FOX_REPRODUCTION_PROBABILITY) {
+        const newFox = foxes[i].reproduce(foxes[i + 1]);
+        offspring.push(newFox);
+      }
+    }
+  }
+  foxes.push(...offspring);
+  allAnimals.push(...offspring);
+  foxesAmount += offspring.length;
+}
+
 function checkIfFoxStarvesToDeath(fox, index, foxesArr) {
   if (fox.isHungerDead()) {
     foxesArr.splice(index, 1);
     animalDies(fox);
   }
 }
+
 /**
  * Utils
  */
@@ -244,8 +264,6 @@ function getLocationFromPosition(position) {
 
 }
 
-function copyObject(obj) {
-  return JSON.parse(JSON.stringify(obj))
-}
+
 
 
