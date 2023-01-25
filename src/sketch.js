@@ -2,6 +2,7 @@ import { Fox } from "./Fox.js";
 import { Rabbit } from "./Rabbit.js";
 import { copyObject } from "./Functions.js";
 
+let running = false;
 const boxesPerRow = 5;
 let globalLocations = [];
 let allAnimals = [];
@@ -12,24 +13,42 @@ let boxHeight;
 let foxImage;
 let rabbitImage;
 
-const FOX_REPRODUCTION_PROBABILITY = 0.4;
-const RABBIT_REPRODUCTION_PROBABILITY = 0.6;
+let FOX_REPRODUCTION_PROBABILITY;
+let RABBIT_REPRODUCTION_PROBABILITY;
+let HUNGER_LIMIT;
 
 window.setup = setup;
 window.preload = preload;
 window.draw = draw;
-window.mouseClicked = mouseClicked;
 
 
-const main = document.getElementById('main');
+const canvasDiv = document.getElementById('canvasDiv');
+const startBtn = document.getElementById('startBtn');
+const refreshBtn = document.getElementById('refreshBtn');
+
+const initialFoxes = document.getElementById('initialFoxes');
+const initialRabbits = document.getElementById('initialRabbits');
+const probFoxes = document.getElementById('probFoxes');
+const probRabbits = document.getElementById('probRabbits');
+const survivingFoxBoxes = document.getElementById('survivingFoxBoxes');
+
 const foxesAmountP = document.createElement('p');
 const rabbitsAmountP = document.createElement('p');
 foxesAmountP.classList.add('text');
 rabbitsAmountP.classList.add('text');
-foxesAmountP.innerHTML = `Foxes: ${foxesAmount}`;
-rabbitsAmountP.innerHTML = `Rabbits: ${rabbitsAmount}`
-main.append(foxesAmountP);
-main.append(rabbitsAmountP);
+foxesAmountP.innerHTML = `Zorros: ${foxesAmount}`;
+rabbitsAmountP.innerHTML = `Conejos: ${rabbitsAmount}`
+canvasDiv.append(foxesAmountP);
+canvasDiv.append(rabbitsAmountP);
+
+
+/**
+ * Refresh event
+ */
+refreshBtn.addEventListener('click', () => {
+  location.reload();
+});
+
 
 
 function preload() {
@@ -39,10 +58,39 @@ function preload() {
 
 
 function setup() {
-  createCanvas(500, 500);
-  initializeLocations();
-  generateFoxes();
-  generateRabbits();
+  const myCanvas = createCanvas(500, 500);
+  myCanvas.parent('canvasDiv');
+
+  /**
+ * CLick event
+ */
+  startBtn.addEventListener('click', () => {
+    startBtn.disabled = true;
+    rabbitsAmount = parseInt(initialRabbits.value) || 10;
+    foxesAmount = parseInt(initialFoxes.value) || 10;
+    FOX_REPRODUCTION_PROBABILITY = parseFloat(probFoxes.value) || 0.3;
+    RABBIT_REPRODUCTION_PROBABILITY = parseFloat(probRabbits.value) || 0.6;
+    HUNGER_LIMIT = parseInt(survivingFoxBoxes.value) || 6;
+    initializeLocations();
+    generateFoxes();
+    generateRabbits();
+
+    running = true;
+
+    const checkedElement = document.querySelector('input[name="mode"]:checked');
+    if (checkedElement.value == "automatic") {
+      setInterval(() => {
+        moveEveryAnimal();
+        updateAnimalsGlobalLocations();
+        checkAnimalsState();
+      }, 1500);
+    }
+    else {
+      myCanvas.mouseClicked(mouseClicked);
+    }
+  });
+
+
 }
 
 function initializeLocations() {
@@ -57,7 +105,7 @@ function initializeLocations() {
 function generateFoxes() {
   const initialFoxesLocation = { x: 4, y: 0 };
   for (let fox = 0; fox < foxesAmount; fox++) {
-    let newFox = new Fox(copyObject(initialFoxesLocation), `fox${fox}`);
+    let newFox = new Fox(copyObject(initialFoxesLocation), `fox${fox}`, HUNGER_LIMIT);
     globalLocations[initialFoxesLocation.y][initialFoxesLocation.x].foxes.push(newFox);
     allAnimals.push(newFox);
   }
@@ -76,12 +124,13 @@ function draw() {
   boxHeight = height / boxesPerRow;
   background(90, 220, 90);
 
-  updateAnimalsCountHTML();
+  if (running) {
+    updateAnimalsCountHTML();
 
-  drawGrid();
+    drawGrid();
 
-  drawAnimals();
-
+    drawAnimals();
+  }
 }
 
 function updateAnimalsCountHTML() {
@@ -113,8 +162,8 @@ function drawAnimals() {
       const amountRabbits = globalLocations[y][x].rabbits.length;
       const location = { y: y, x: x };
       const position = getPositionFromLocation(location);
-      text(`Foxes: ${amountFoxes}`, position.x + 30, position.y + 40);
-      text(`Rabbits: ${amountRabbits}`, position.x + 30, position.y + 60);
+      // text(`Foxes: ${amountFoxes}`, position.x + 30, position.y + 40);
+      // text(`Rabbits: ${amountRabbits}`, position.x + 30, position.y + 60);
       drawAnimalImagesInBox(position, amountFoxes, amountRabbits);
     }
   }
@@ -199,7 +248,7 @@ function checkAnimalsState() {
       }
     }
 
-  }, 1000);
+  }, 500);
 }
 
 function checkIfFoxCanEatRabbit(fox, rabbits) {

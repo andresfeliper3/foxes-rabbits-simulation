@@ -7,9 +7,9 @@ html, body {
   body {
     margin: 0;
     display: flex;
-  
+    flex-direction: column;
     /* This centers our sketch horizontally. */
-    justify-content: center;
+    justify-content: flex-start;
   
     /* This centers our sketch vertically. */
     align-items: center;
@@ -18,12 +18,31 @@ html, body {
   .text {
     text-align: center;
   }
+  .description {
+    text-align:start
+  }
 
   #main {
    width: 80%; 
-   border: 1px solid red;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-evenly;
   }
 
   #info{
-    
+   width: 40%;
+   display: flex;
+   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  }
+
+  .initialParams {
+    width:50px;
+  }
+  .initialParamsDiv {
+    margin-top: 10px;
+  }
+  .radioButtons {
+
   }

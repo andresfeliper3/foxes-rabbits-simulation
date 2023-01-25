@@ -20,13 +20,57 @@
 </head>
 
 <body>
+  <header>
+    <h1>Zorros y conejos</h1>
+  </header>
   <main id="main">
-    <div id="canvas">
+    <section id="canvasDiv">
       
-    </div>
-    <div id="info">
-      <p>Hola</p>
-    </div>
+    </section>
+    <section id="info">
+      <h3>Valores iniciales</h2>
+        <div class="initialParamsDiv">
+          <label for="initialFoxes">Cantidad inicial de zorros:</label>
+          <input type="text" id="initialFoxes" name="initialFoxes" class="initialParams" placeholder="10">
+        </div>
+        <div class="initialParamsDiv">
+          <label for="initialRabbits">Cantidad inicial de conejos:</label>
+          <input type="text" id="initialRabbits" name="initialRabbits" class="initialParams" placeholder="10">
+        </div>
+        <div class="initialParamsDiv">
+          <label for="probFoxes">PR de zorros (0-1):</label>
+          <input type="text" id="probFoxes" name="probFoxes" class="initialParams" placeholder="0.3">
+        </div>
+        <div class="initialParamsDiv">
+          <label for="probRabbits">PR de conejos (0-1):</label>
+          <input type="text" id="probRabbits" name="probRabbits" class="initialParams" placeholder="0.6">
+        </div>
+        <div class="initialParamsDiv">
+          <label for="survivingFoxBoxes">Supervivencia de zorros:</label>
+          <input type="text" id="survivingFoxBoxes" name="survivingFoxBoxes" class="initialParams" placeholder="6">
+        </div>
+         
+       <div>
+        <p class="description"><b>PR:</b> probabilidad de reproducción si dos animales de la misma especie se encuentran en una casilla. Selecciona un valor entre cero y uno.</p>
+        <p class="description"><b>Supervivencia:</b> cantidad de casillas que puede recorrer un zorro sin comer.</p>
+         <p class="description">Selecciona el modo para realizar la simulación. </p>
+         <p class="description">Si se selecciona el modo manual, se debe hacer click sobre la grilla para pasar a la siguiente iteración.</p>
+       </div>
+
+       <div class="radioButtons">
+        <input type="radio" id="manual" name="mode" value="manual" checked>
+         <label for="manual">Manual</label><br>
+     
+      <input type="radio" id="automatic" name="mode" value="automatic">
+          <label label for="automatic">Automático</label><br>
+     </div>
+     <br>
+     <div>
+      <input type="submit" value="Empezar" id="startBtn">
+      <input type="submit" value="Recargar" id="refreshBtn">
+
+     </div>
+    </section>
   </main>
 </body>
 

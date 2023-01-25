@@ -1,14 +1,14 @@
 import { Animal } from "./Animal.js";
 import { copyObject } from "./Functions.js";
 
-const HUNGER_LIMIT = 5;
 
 export class Fox extends Animal {
-    constructor(initialLocation, name) {
+    constructor(initialLocation, name, hungerLimit) {
         super();
         this.location = initialLocation;
         this.name = name;
         this.hunger = 0;
+        this.hungerLimit = hungerLimit;
     }
 
     eatRabbit() {
@@ -20,14 +20,14 @@ export class Fox extends Animal {
     }
 
     isHungerDead() {
-        if (this.hunger >= HUNGER_LIMIT) {
+        if (this.hunger >= this.hungerLimit) {
             return true;
         }
         return false;
     }
 
     reproduce(fox) {
-        return new Fox(copyObject(this.location), `{${this.name},${fox.getName()}}`);
+        return new Fox(copyObject(this.location), `{${this.name},${fox.getName()}}`, this.hungerLimit);
     }
 
     getLocation() {
