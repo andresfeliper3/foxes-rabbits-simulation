@@ -112,12 +112,12 @@ function drawAnimals() {
 
 function drawAnimalImagesInBox(position, amountFoxes, amountRabbits) {
   let accum_x = 0;
-  let accum_y = 5;
+  let accum_y = 0.05 * boxHeight;
 
   for (let fox = 0; fox < amountFoxes + amountRabbits; fox++) {
 
     //stop drawing images if animals do not fit the box
-    if (accum_y > 100) {
+    if (accum_y > boxHeight) {
       break;
     }
     if (fox < amountFoxes) {
@@ -127,10 +127,10 @@ function drawAnimalImagesInBox(position, amountFoxes, amountRabbits) {
       image(rabbitImage, position.x + accum_x, position.y + accum_y);
     }
     //line break
-    accum_x += 20;
-    if (accum_x >= 90) {
+    accum_x += 0.2 * boxWidth;
+    if (accum_x >= 0.9 * boxWidth) {
       accum_x = 0;
-      accum_y += 20;
+      accum_y += 0.2 * boxHeight;
     }
   }
 }
