@@ -41,7 +41,7 @@ export class Animal {
             default:
                 throw new Error("Not valid direction");
         }
-        console.log("new location", this.location, "randomValidDirection", randomValidDirection, "name", this.name);
+
     }
 
     generateRandomValidDirection() {

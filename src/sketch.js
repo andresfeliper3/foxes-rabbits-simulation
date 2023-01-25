@@ -73,10 +73,18 @@ function draw() {
   boxHeight = height / boxesPerRow;
   background(90, 220, 90);
 
+  updateAnimalsCountHTML();
 
   drawGrid();
 
   drawAnimals();
+
+
+}
+
+function updateAnimalsCountHTML() {
+  foxesAmountP.innerHTML = `Foxes: ${foxesAmount}`;
+  rabbitsAmountP.innerHTML = `Rabbits: ${rabbitsAmount}`
 }
 
 function drawGrid() {
@@ -141,12 +149,16 @@ function drawAnimalImagesInBox(position, amountFoxes, amountRabbits) {
 function mouseClicked() {
   moveEveryAnimal();
   updateAnimalsGlobalLocations();
+  checkAnimalsState();
 }
 
 
 function moveEveryAnimal() {
   allAnimals.forEach(animal => {
     animal.move();
+    if (animal instanceof Fox) {
+      animal.increaseHunger();
+    }
   });
 }
 
@@ -168,6 +180,49 @@ function updateAnimalsGlobalLocations() {
 function clearGlobalLocations() {
   globalLocations = [];
   initializeLocations();
+}
+
+function checkAnimalsState() {
+  setTimeout(() => {
+    for (let y = 0; y < globalLocations.length; y++) {
+      for (let x = 0; x < globalLocations[y].length; x++) {
+        globalLocations[y][x].foxes.forEach((fox, index, foxesArr) => {
+          const rabbits = globalLocations[y][x].rabbits;
+          checkIfFoxCanEatRabbit(fox, rabbits);
+          checkIfFoxStarvesToDeath(fox, index, foxesArr);
+
+        });
+      }
+    }
+
+  }, 1000);
+  console.log(globalLocations);
+}
+
+function checkIfFoxCanEatRabbit(fox, rabbits) {
+  const amountOfRabbitsInThisLocation = rabbits.length;
+  if (amountOfRabbitsInThisLocation > 0) {
+    fox.eatRabbit();
+    const eatenRabbit = rabbits.pop(); //the rabbit is deleted from the list
+    animalDies(eatenRabbit);
+  }
+}
+function animalDies(animal) {
+  const animalIndex = allAnimals.indexOf(animal);
+  allAnimals.splice(animalIndex, 1);
+  if (animal instanceof Rabbit) {
+    rabbitsAmount--;
+  }
+  else if (animal instanceof Fox) {
+    foxesAmount--;
+  }
+}
+
+function checkIfFoxStarvesToDeath(fox, index, foxesArr) {
+  if (fox.isHungerDead()) {
+    foxesArr.splice(index, 1);
+    animalDies(fox);
+  }
 }
 /**
  * Utils
