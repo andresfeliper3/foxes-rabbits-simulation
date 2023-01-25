@@ -1,6 +1,7 @@
 import { Fox } from "./Fox.js";
 import { Rabbit } from "./Rabbit.js";
 
+
 const boxesPerRow = 5;
 let globalLocations = [];
 let allAnimals = [];
@@ -16,6 +17,16 @@ window.preload = preload;
 window.draw = draw;
 window.mouseClicked = mouseClicked;
 
+
+const main = document.getElementById('main');
+const foxesAmountP = document.createElement('p');
+const rabbitsAmountP = document.createElement('p');
+foxesAmountP.classList.add('text');
+rabbitsAmountP.classList.add('text');
+foxesAmountP.innerHTML = `Foxes: ${foxesAmount}`;
+rabbitsAmountP.innerHTML = `Rabbits: ${rabbitsAmount}`
+main.append(foxesAmountP);
+main.append(rabbitsAmountP);
 
 
 function preload() {
