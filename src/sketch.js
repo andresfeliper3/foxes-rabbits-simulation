@@ -134,8 +134,8 @@ function draw() {
 }
 
 function updateAnimalsCountHTML() {
-  foxesAmountP.innerHTML = `Foxes: ${foxesAmount}`;
-  rabbitsAmountP.innerHTML = `Rabbits: ${rabbitsAmount}`
+  foxesAmountP.innerHTML = `Zorros: ${foxesAmount}`;
+  rabbitsAmountP.innerHTML = `Conejos: ${rabbitsAmount}`
 }
 
 function drawGrid() {
